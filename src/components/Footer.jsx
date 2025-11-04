@@ -7,7 +7,7 @@ export default function Footer() {
           <span>© {new Date().getFullYear()}</span>
         </div>
         <div className="text-xs text-[#434545]/60">
-          Built with an Apple-inspired, minimal system — no rounded corners, just results.
+          Minimal, high-conversion design system — clarity first.
         </div>
       </div>
     </footer>

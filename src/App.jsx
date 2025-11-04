@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import Header from './components/Header';
 import HomeSections from './components/HomeSections';
-import Confirmation from './components/Confirmation';
+import Step2 from './components/Step2';
+import Step4 from './components/Step4';
 import Footer from './components/Footer';
 
 export default function App() {
@@ -21,22 +22,25 @@ export default function App() {
     }
   };
 
-  const isConfirm = path.startsWith('/confirm');
+  const RouteView = () => {
+    if (path.startsWith('/step-2')) return <Step2 />;
+    if (path.startsWith('/step-4')) return <Step4 />;
+    return <HomeSections onNavigate={navigate} />;
+  };
 
   return (
     <div className="min-h-screen bg-white font-[Inter,ui-sans-serif]">
       <Header onNavigate={navigate} />
-      {isConfirm ? <Confirmation /> : <HomeSections onNavigate={navigate} />}
+      <RouteView />
       <Footer />
 
-      {/* Sticky mobile CTA */}
-      {!isConfirm && (
+      {path === '/' && (
         <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden border-t border-[#434545]/15 bg-white/95 backdrop-blur">
           <div className="max-w-6xl mx-auto px-4 py-3">
             <a
-              href="/confirm"
-              onClick={(e) => { e.preventDefault(); navigate('/confirm'); }}
-              className="w-full inline-flex items-center justify-center rounded-none bg-[#CCFF00] text-[#434545] px-4 py-3 font-medium border border-[#434545]"
+              href="/step-2"
+              onClick={(e) => { e.preventDefault(); navigate('/step-2'); }}
+              className="w-full inline-flex items-center justify-center rounded-[30px] shadow-md bg-[#CCFF00] text-[#434545] px-4 py-3 font-medium"
             >
               Book a Call
             </a>
