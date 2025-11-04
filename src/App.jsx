@@ -1,28 +1,48 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react';
+import Header from './components/Header';
+import HomeSections from './components/HomeSections';
+import Confirmation from './components/Confirmation';
+import Footer from './components/Footer';
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [path, setPath] = useState(window.location.pathname);
+
+  useEffect(() => {
+    const onPop = () => setPath(window.location.pathname);
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
+
+  const navigate = (to) => {
+    if (to !== window.location.pathname) {
+      window.history.pushState({}, '', to);
+      setPath(to);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const isConfirm = path.startsWith('/confirm');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          Vibe Coding Platform
-        </h1>
-        <p className="text-gray-600 mb-6">
-          Your AI-powered development environment
-        </p>
-        <div className="text-center">
-          <button
-            onClick={() => setCount(count + 1)}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            Count is {count}
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
+    <div className="min-h-screen bg-white font-[Inter,ui-sans-serif]">
+      <Header onNavigate={navigate} />
+      {isConfirm ? <Confirmation /> : <HomeSections onNavigate={navigate} />}
+      <Footer />
 
-export default App
+      {/* Sticky mobile CTA */}
+      {!isConfirm && (
+        <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden border-t border-[#434545]/15 bg-white/95 backdrop-blur">
+          <div className="max-w-6xl mx-auto px-4 py-3">
+            <a
+              href="/confirm"
+              onClick={(e) => { e.preventDefault(); navigate('/confirm'); }}
+              className="w-full inline-flex items-center justify-center rounded-none bg-[#CCFF00] text-[#434545] px-4 py-3 font-medium border border-[#434545]"
+            >
+              Book a Call
+            </a>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
